@@ -4,7 +4,6 @@ import argparse
 import os
 import sys
 import shutil
-import json
 import subprocess
 from distutils.dir_util import copy_tree
 from datetime import datetime
