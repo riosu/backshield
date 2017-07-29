@@ -63,7 +63,7 @@ def command_add(args):
     # Get fullpath
     abspath = os.path.abspath(args.file)
 
-    if os.path.exists(abspath):
+    if os.path.exists(abspath) == False:
         print("File not found: %s" % abspath)
         sys.exit(1)
 
