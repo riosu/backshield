@@ -9,8 +9,6 @@ from distutils.dir_util import copy_tree
 from datetime import datetime
 
 def run():
-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
-
     # Parse arguments
     parser = argparse.ArgumentParser(description="Backshield is simple backup tool for server configurations with git.")
     subparsers = parser.add_subparsers()
@@ -44,6 +42,7 @@ def run():
 def command_init(args):
     # Git clone
     print("Run git clone: %s" % args.repository)
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     p = subprocess.Popen("git clone %s data" % args.repository, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
@@ -66,6 +65,7 @@ def command_add(args):
 
     # Add file to config
     hostname = os.uname()[1]
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     with open("data/_backshield/%s.conf" % hostname, "r+") as f:
         watches = f.readlines()
         if abspath in watches:
@@ -81,20 +81,23 @@ def command_remove(args):
 
     # Remove file to config
     hostname = os.uname()[1]
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     with open("data/_backshield/%s.conf" % hostname, "r+") as f:
         watches = f.readlines()
         f.seek(0)
         f.truncate()
         for watch in watches:
             if watch.rstrip() == abspath:
-                os.remove("data/%s%s" % (hostname, abspath))
-                print("Removed %s" % abspath)
+                if os.path.exists(watch):
+                    os.remove("data/%s%s" % (hostname, abspath))
+                    print("Removed %s" % abspath)
                 continue
 
             f.write("%s\n" % watch.rstrip())
 
 def command_list(args):    
     hostname = os.uname()[1]
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     with open("data/_backshield/%s.conf" % hostname, "r") as f:
         watches = f.readlines()
         watches.sort()
@@ -103,6 +106,7 @@ def command_list(args):
 
 def command_backup(args):
     hostname = os.uname()[1]
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     with open("data/_backshield/%s.conf" % hostname, "r+") as f:
         watches = f.readlines()
         for watch in watches:
