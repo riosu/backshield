@@ -18,9 +18,16 @@ def run():
     parser_init.add_argument('repository', type=str, metavar="REPOSITORY", help="git repository for backup")
     parser_init.set_defaults(handler=command_init)
 
-    parser_add = subparsers.add_parser("add", help="Add file to backup")
-    parser_add.add_argument('file', type=str, metavar="FILE", help="file that need to backup")
+    parser_add = subparsers.add_parser("add", help="Add file to backup targets")
+    parser_add.add_argument('file', type=str, metavar="FILE", help="filename")
     parser_add.set_defaults(handler=command_add)
+
+    parser_remove = subparsers.add_parser("remove", help="Remove file in backup targets")
+    parser_remove.add_argument('file', type=str, metavar="FILE", help="filename")
+    parser_remove.set_defaults(handler=command_remove)
+
+    parser_list = subparsers.add_parser("list", help="Print backup targets")
+    parser_list.set_defaults(handler=command_list)
 
     parser_backup = subparsers.add_parser("backup", help="Backup now")
     parser_backup.add_argument('message', type=str, nargs="?", default="-", metavar="COMMIT_MESSAGE", help="commit message")
@@ -66,6 +73,32 @@ def command_add(args):
         f.write("%s\n" % abspath)
 
     print("Added %s" % abspath)
+
+def command_remove(args):
+    # Get fullpath
+    abspath = os.path.abspath(args.file)
+
+    # Add file to config
+    hostname = os.uname()[1]
+    with open("data/_backshield/%s.conf" % hostname, "r+") as f:
+        watches = f.readlines()
+        f.seek(0)
+        f.truncate()
+        for watch in watches:
+            if watch.rstrip() == abspath:
+                os.remove("data/%s%s" % (hostname, abspath))
+                print("Removed %s" % abspath)
+                continue
+            
+            f.write("%s\n" % watch.rstrip())
+
+def command_list(args):    
+    hostname = os.uname()[1]
+    with open("data/_backshield/%s.conf" % hostname, "r") as f:
+        watches = f.readlines()
+        watches.sort()
+        for watch in watches:
+            print(watch.rstrip())
 
 def command_backup(args):
     hostname = os.uname()[1]
