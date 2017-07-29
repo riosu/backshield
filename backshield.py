@@ -7,7 +7,6 @@ import shutil
 import subprocess
 from distutils.dir_util import copy_tree
 from datetime import datetime
-from pytz import timezone
 
 def run():
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -124,7 +123,7 @@ def command_backup(args):
                 shutil.copy(watch, "data/%s%s" % (hostname, watch))
 
     # Git commit     
-    timestr = datetime.now(timezone("Asia/Tokyo")).strftime("%Y/%m/%d %H:%M:%S")
+    timestr = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     p = subprocess.Popen("cd data && git add -A; git diff-index --quiet HEAD || (git commit -m \"[%s] %s: %s\" ;git push origin master) && cd .." % (timestr, hostname, args.message), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
