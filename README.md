@@ -3,7 +3,11 @@ Backshield is simple backup tool for server configurations with git.
 
 # Install
 ```
-ln -s "`pwd`/backshield.py" /usr/local/bin/backshield
+sudo su
+cd /usr/local/src/
+git clone git@github.com:riosu/backshield.git
+cd backshield
+./setup.sh
 ```
 
 # Usages

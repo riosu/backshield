@@ -10,4 +10,4 @@ if ! which python3 > /dev/null 2>&1; then
 fi
 
 # Create simlink
-ln -s "`pwd`/backshield.py" /usr/local/bin/backshield
+ln -s "`pwd`/backshield.py" /usr/bin/backshield
