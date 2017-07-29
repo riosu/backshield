@@ -63,6 +63,10 @@ def command_add(args):
     # Get fullpath
     abspath = os.path.abspath(args.file)
 
+    if os.path.exists(abspath):
+        print("File not found: %s" % abspath)
+        sys.exit(1)
+
     # Add file to config
     hostname = os.uname()[1]
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
