@@ -10,6 +10,8 @@ from datetime import datetime
 from pytz import timezone
 
 def run():
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
     # Parse arguments
     parser = argparse.ArgumentParser(description="Backshield is simple backup tool for server configurations with git.")
     subparsers = parser.add_subparsers()
@@ -78,7 +80,7 @@ def command_remove(args):
     # Get fullpath
     abspath = os.path.abspath(args.file)
 
-    # Add file to config
+    # Remove file to config
     hostname = os.uname()[1]
     with open("data/_backshield/%s.conf" % hostname, "r+") as f:
         watches = f.readlines()
@@ -89,7 +91,7 @@ def command_remove(args):
                 os.remove("data/%s%s" % (hostname, abspath))
                 print("Removed %s" % abspath)
                 continue
-            
+
             f.write("%s\n" % watch.rstrip())
 
 def command_list(args):    
